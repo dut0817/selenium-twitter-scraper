@@ -516,7 +516,7 @@ It may be due to the following:
         current_time = now.strftime("%Y-%m-%d_%H-%M-%S")
         file_path = f"{folder_path}{current_time}_tweets_1-{len(self.data)}.csv"
         pd.set_option("display.max_colwidth", None)
-        df.to_csv(file_path, index=False, encoding="utf-8")
+        df.to_csv(file_path, index=False, encoding="utf-8-sig") # changed encoding
 
         print("CSV Saved: {}".format(file_path))
 

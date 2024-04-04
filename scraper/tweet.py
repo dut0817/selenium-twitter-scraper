@@ -59,14 +59,26 @@ class Tweet:
         except NoSuchElementException:
             self.verified = False
 
-        self.content = ""
-        contents = card.find_elements(
-            "xpath",
-            '(.//div[@data-testid="tweetText"])[1]/span | (.//div[@data-testid="tweetText"])[1]/a',
-        )
-
-        for index, content in enumerate(contents):
-            self.content += content.text
+        # added by Yeji
+        try:
+            # extract tweet contents
+            tweet_text_element = card.find_element(
+                "xpath", './/div[@data-testid="tweetText"]'
+            )
+            all_nodes = tweet_text_element.find_elements("xpath", "./*")
+            content_with_emojis = ""
+            # extract texts and emojis by traversing all nodes
+            for node in all_nodes:
+                # if node is emoji
+                if node.tag_name == "img" and "emoji" in node.get_attribute('src'):
+                    content_with_emojis += node.get_attribute('alt')
+                # if node is text
+                else:
+                    content_with_emojis += node.text
+            self.content = content_with_emojis
+        except NoSuchElementException:
+            self.error = True
+            self.content = ""
 
         try:
             self.reply_cnt = card.find_element(
